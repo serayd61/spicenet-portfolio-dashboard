@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spicenet Cross-Chain Portfolio Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-blue-600 rounded-lg">
+                        <i class="fas fa-bolt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Spicenet Portfolio</h1>
+                        <p class="text-sm text-gray-600">Cross-Chain Portfolio Manager</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 text-sm text-gray-500">
+                    <i class="fas fa-globe"></i>
+                    <span>Ethereum Network</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Portfolio Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Portfolio Value</p>
+                        <p class="text-3xl font-bold text-gray-900" id="totalValue">$0.00</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <i class="fas fa-wallet text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Assets Count</p>
+                        <p class="text-3xl font-bold text-gray-900" id="assetCount">10</p>
+                    </div>
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <i class="fas fa-chart-bar text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">24h Change</p>
+                        <div class="flex items-center space-x-1">
+                            <i class="fas fa-arrow-up text-green-500"></i>
+                            <p class="text-3xl font-bold text-green-500">+2.34%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Portfolio Distribution -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">Portfolio Distribution</h3>
+                <div class="relative h-80">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">Portfolio Performance</h3>
+                <div class="relative h-80">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assets Table -->
+        <div class="bg-white rounded-xl shadow-sm border">
+            <div class="p-6 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Your Assets</h3>
+                <p class="text-sm text-gray-600 mt-1">Real-time cross-chain portfolio tracking</p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asset</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">24h Change</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assetsTable" class="bg-white divide-y divide-gray-200">
+                        <!-- Assets will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Spicenet Branding -->
+        <div class="mt-8 text-center">
+            <div class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-100 rounded-full">
+                <i class="fas fa-bolt text-blue-600"></i>
+                <span class="text-sm font-medium text-blue-600">Powered by Spicenet Cross-Chain Technology</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Built for Spicenet Airdrop Campaign</p>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="animate-pulse mb-4">
+                <i class="fas fa-bolt text-blue-600 text-5xl"></i>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-700">Spicenet Portfolio Loading...</h2>
+            <p class="text-gray-500 mt-2">Fetching cross-chain data</p>
+        </div>
+    </div>
+
+    <script>
+        // Portfolio data
+        const coins = [
+            { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', color: '#f7931a' },
+            { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', color: '#627eea' },
+            { id: 'solana', symbol: 'SOL', name: 'Solana', color: '#66d9ef' },
+            { id: 'optimism', symbol: 'OP', name: 'Optimism', color: '#ff0420' },
+            { id: 'nolus', symbol: 'NLS', name: 'Nolus', color: '#4f46e5' },
+            { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', color: '#ff007a' },
+            { id: 'cosmos', symbol: 'ATOM', name: 'Cosmos', color: '#2e3148' },
+            { id: 'lisk', symbol: 'LSK', name: 'Lisk', color: '#1a6ec0' },
+            { id: 'sui', symbol: 'SUI', name: 'Sui', color: '#6fbcf0' },
+            { id: 'virtual-protocol', symbol: 'VIRTUAL', name: 'Virtual Protocol', color: '#8b5cf6' }
+        ];
+
+        // Generate mock portfolio data
+        const generatePortfolioData = () => {
+            return coins.map(coin => ({
+                ...coin,
+                balance: Math.random() * 10 + 0.1,
+                price: Math.random() * 1000 + 50,
+                change24h: (Math.random() - 0.5) * 20
+            }));
+        };
+
+        const portfolioData = generatePortfolioData();
+        const totalValue = portfolioData.reduce((sum, coin) => sum + (coin.balance * coin.price), 0);
+
+        // Update total value
+        document.getElementById('totalValue').textContent = `$${totalValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+
+        // Populate assets table
+        const assetsTableBody = document.getElementById('assetsTable');
+        portfolioData.forEach(coin => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            
+            const changeIcon = coin.change24h >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            const changeColor = coin.change24h >= 0 ? 'text-green-600' : 'text-red-600';
+            
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm" 
+                             style="background-color: ${coin.color}">
+                            ${coin.symbol.charAt(0)}
+                        </div>
+                        <div class="ml-3">
+                            <div class="text-sm font-medium text-gray-900">${coin.name}</div>
+                            <div class="text-sm text-gray-500">${coin.symbol}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    ${coin.balance.toFixed(4)}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    $${coin.price.toFixed(2)}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center ${changeColor}">
+                        <i class="fas ${changeIcon} mr-1"></i>
+                        <span class="text-sm font-medium">
+                            ${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%
+                        </span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    $${(coin.balance * coin.price).toFixed(2)}
+                </td>
+            `;
+            
+            assetsTableBody.appendChild(row);
+        });
+
+        // Portfolio Distribution Chart
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        new Chart(portfolioCtx, {
+            type: 'doughnut',
+            data: {
+                labels: portfolioData.map(coin => coin.symbol),
+                datasets: [{
+                    data: portfolioData.map(coin => coin.balance * coin.price),
+                    backgroundColor: portfolioData.map(coin => coin.color),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Performance Chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        const performanceData = Array.from({ length: 24 }, (_, i) => ({
+            x: i,
+            y: Math.random() * 1000 + 500
+        }));
+
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Portfolio Value',
+                    data: performanceData,
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Value ($)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Hide loading screen after 2 seconds
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }, 2000);
+    </script>
+</body>
+</html>
